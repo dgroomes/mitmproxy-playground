@@ -65,13 +65,13 @@ Follow these instructions to set up mitmproxy and intercept HTTP traffic between
      server disconnect www.w3.org:443
      ```
    * Because we wired up all the certificates correctly, the request and response header content is visible and not encrypted. Very neat.
-5. NOT YET TEST Block traffic
+5. Block traffic
    * Now we'll configure mitmproxy to actually shape traffic by blocking a specific host. We can do this with the `block_list` option and a [filter expression][filter-expressions]. Stop the current mitmproxy instance (Ctrl+C) and restart it with the following command. 
    * ```shell
      mitmdump --listen-host 127.0.0.1 --flow-detail 3 --set block_list=":~d mozilla\\.org:403"
      ```
    * The value of the `block_list` option here is dense. It took me a while to understand it. It is a filter expression. The leading `:` declares our preferred character to use as the delimiter. This should remind you of `sed`'s substitute command where you might write `s/old/new/` but you could just as well write `s:old:new:`. The `~d` is an *operator* for domain names. The `mozilla\\.org` is a regular expression. The following `:` is a delimiter, and the 403 says that we want requests matching this filter to be met with a 403 response. 
-6. NOT YET TESTED Test the filtering proxy
+6. Test the filtering proxy
    * Repeat the request to `w3.org` again. It should still work. Then, try a request to the blocked domain. It should be rejected with a 403.
    * ```shell
      curl --head --proxy http://127.0.0.1:8080 --cacert ~/.mitmproxy/mitmproxy-ca-cert.pem https://mozilla.org
@@ -82,8 +82,8 @@ Follow these instructions to set up mitmproxy and intercept HTTP traffic between
 
 General clean-ups, TODOs and things I wish to implement for this subproject:
 
-* [ ] IN PROGRESS Filtering rules to only block traffic to a domain, like mozilla.org.
-* [ ] Consider using `mitmproxy` for interactive use, instead of `mitmdump`. That way, we should be able to add the block rule interactively and that would make for a better demo.
+* [x] DONE Filtering rules to only block traffic to a domain, like mozilla.org.
+* [ ] SKIP (Tried it, don't like it for a demo) Consider using `mitmproxy` for interactive use, instead of `mitmdump`. That way, we should be able to add the block rule interactively and that would make for a better demo.
 
 
 ## Reference
